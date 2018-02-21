@@ -13,7 +13,7 @@ function get_swift_token() {
     fi
 }
 
-if [ "$OBJECT_STORE" == "swift" ]; then
+function wait_for_swift() {
     echo "waiting for keystone"
     until get_swift_token
     do
@@ -55,11 +55,24 @@ if [ "$OBJECT_STORE" == "swift" ]; then
         file="helloworld${i}.txt"
 
         respCode=$(curl -s -o /dev/null -w "%{http_code}" -X PUT -H "X-Auth-Token: $SWIFT_TOKEN" -H "Content-Type: text/html; charset=UTF-8" -d "Hello world" "$SWIFT_ENDPOINT/nextcloud/$file")
-        curl -s -o /dev/null -w "%{http_code}\n" -X DELETE -H "X-Auth-Token: $SWIFT_TOKEN" "$SWIFT_ENDPOINT/nextcloud/$file"
+        curl -s -o /dev/null -w "delete file got code: %{http_code}\n" -X DELETE -H "X-Auth-Token: $SWIFT_TOKEN" "$SWIFT_ENDPOINT/nextcloud/$file"
 
         if [ "$respCode" == "201" ]
         then
             break
         fi
+
+        if [ "$i" == "10" ]
+        then
+            curl -s -o /dev/null -w "deleting bucket got code: %{http_code}\n" -X DELETE -H "X-Auth-Token: $SWIFT_TOKEN" "$SWIFT_ENDPOINT/nextcloud"
+
+            wait_for_swift
+            break
+        fi
     done
+
+}
+
+if [ "$OBJECT_STORE" == "swift" ]; then
+    wait_for_swift
 fi
