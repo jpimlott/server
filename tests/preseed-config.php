@@ -34,7 +34,7 @@ if (getenv('OBJECT_STORE') === 's3') {
 		)
 	];
 }
-if (getenv('OBJECT_STORE') === 'swift' && getenv('SWIFT-AUTH') !== 'v3') {
+if (getenv('OBJECT_STORE') === 'swift') {
 	$swiftHost = getenv('DRONE') === 'true' ? 'dockswift' : 'localhost';
 
 	if (getenv('SWIFT-AUTH') === 'v2.0') {
