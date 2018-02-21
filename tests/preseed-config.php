@@ -63,7 +63,7 @@ if (getenv('OBJECT_STORE') === 'swift' && getenv('SWIFT-AUTH') !== 'v3') {
 				'password' => 'swift',
 				'serviceName' => 'swift',
 				'region' => 'regionOne',
-				'url' => "http://$swiftHost:5000/v3",
+				'url' => "http://$swiftHost:5000/v3/auth",
 				'bucket' => 'nextcloud'
 			)
 		];
