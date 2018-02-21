@@ -2,6 +2,7 @@
 
 function get_swift_token() {
     KEYSTONE_OUT=$(curl -s 'http://dockswift:5000/v2.0/tokens' -H 'Content-Type: application/json' -d '{"auth":{"passwordCredentials":{"username":"swift","password":"swift"},"tenantName":"service"}}')
+    echo $KEYSTONE_OUT
     if (echo "$KEYSTONE_OUT" | grep -q 'object-store')
     then
         SWIFT_ENDPOINT=$(echo "$KEYSTONE_OUT" | php -r "echo array_values(array_filter(json_decode(file_get_contents('php://stdin'),true)['access']['serviceCatalog'], function(\$endpoint){return \$endpoint['type']==='object-store';}))[0]['endpoints'][0]['publicURL'];")
